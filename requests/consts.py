@@ -1,0 +1,6 @@
+VERSION = 1.0
+
+REQUIRED_FIELDS = {
+    "VERSION": VERSION,
+    "TYPE": None
+}

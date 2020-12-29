@@ -1,6 +1,6 @@
-import requests
 from parsers.base_parser import BaseParser
 from network_handler import BaseNetworkHandler
+from requests.ready_request import ReadyRequest
 
 VERTICAL = "Vertical"
 HORIZONTAL = "Horizontal"
@@ -136,7 +136,7 @@ class Game:
         """
         Send READY request to opponent.
         """
-        data = self.parser.pack(requests.ReadyRequest().to_dict())
+        data = self.parser.pack(ReadyRequest().to_dict())
         self.network_handler.send(data)
 
     def play(self):
