@@ -1,6 +1,6 @@
 from parsers.base_parser import BaseParser
-from network_handler import BaseNetworkHandler
 from requests.ready_request import ReadyRequest
+from network_handlers.base_network_handler import BaseNetworkHandler
 
 VERTICAL = "Vertical"
 HORIZONTAL = "Horizontal"
