@@ -1,3 +1,5 @@
+from network_handler import BaseNetworkHandler
+
 VERTICAL = "Vertical"
 HORIZONTAL = "Horizontal"
 BOARD_SIZE = 10
@@ -13,7 +15,12 @@ class Game:
     Class representing a submarines game.
     """
 
-    def __init__(self):
+    def __init__(self, network_handler: BaseNetworkHandler):
+        """
+        Default constructor.
+        :param network_handler: A NetworkHandler object for sending and receiving requests.
+        """
+        self.network_handler = network_handler
         self.board = [[0] * 10] * 10
 
     def set_submarine_horizontally(self, start_column: int, end_column: int, row: int):
@@ -112,9 +119,18 @@ class Game:
                 alignment, axis_value, start_point, end_point = prompt_submarine_location()
             self.set_submarine(alignment, axis_value, start_point, end_point)
 
-    def play(self, opponent_ip: str):
+    def initialize_connection(self):
+        """
+        Initialize a connection with an opponent.
+        """
+        if prompt_is_host():
+            self.network_handler.listen()
+        opponent_ip = prompt_opponent_ip()
+        self.network_handler.connect(opponent_ip)
+
+    def play(self):
         """
         Plays the game.
-        :param opponent_ip: The IP address of the opponent.
         """
+        self.initialize_connection()
         self.set_submarines()

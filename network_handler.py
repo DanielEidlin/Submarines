@@ -55,7 +55,8 @@ class TCPNetworkHandler(BaseNetworkHandler):
         """
         Default constructor.
         """
-        self.socket = socket(AF_INET, SOCK_STREAM)
+        self.server_socket = socket(AF_INET, SOCK_STREAM)
+        self.client_socket = None
 
     def listen(self, bind_ip: str = '', listen_queue: int = DEFAULT_LISTEN_QUEUE):
         """
@@ -63,22 +64,25 @@ class TCPNetworkHandler(BaseNetworkHandler):
         :param bind_ip: IP address to bind to.
         :param listen_queue: Number of incoming connections to hold in queue.
         """
-        self.socket.bind((bind_ip, PORT))
-        self.socket.listen(listen_queue)
+        self.server_socket.bind((bind_ip, PORT))
+        self.server_socket.listen(listen_queue)
+        self.client_socket, _ = self.server_socket.accept()
 
     def connect(self, ip: str):
         """
         Connects to another network client.
         :param ip: IP address to connect to.
         """
-        self.socket.connect((ip, PORT))
+        self.server_socket.connect((ip, PORT))
 
     def send(self, data: bytes):
         """
         Sends data to network.
         :param data: Data to send.
         """
-        self.socket.send(data)
+        if self.client_socket:
+            self.client_socket.send(data)
+        self.server_socket.send(data)
 
     def receive(self, buffer_size: int = DEFAULT_BUFFER_SIZE) -> bytes:
         """
@@ -86,4 +90,6 @@ class TCPNetworkHandler(BaseNetworkHandler):
         :param buffer_size: Size of data to receive.
         :return: Received data.
         """
-        return self.socket.recv(buffer_size)
+        if self.client_socket:
+            return self.client_socket.recv(buffer_size)
+        return self.server_socket.recv(buffer_size)
