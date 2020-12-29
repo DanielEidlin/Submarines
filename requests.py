@@ -89,6 +89,7 @@ class ErrorRequest(BaseRequest):
     """
     Class representing an ERROR request.
     """
+
     def __init__(self, status: ErrorStatus):
         """
         Default constructor.
@@ -102,4 +103,3 @@ class ErrorRequest(BaseRequest):
         :return: The request as dictionary.
         """
         return dict(REQUIRED_FIELDS, **{"TYPE": "ERROR"}, **{"STATUS": self.status.name})
-
