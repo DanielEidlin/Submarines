@@ -2,7 +2,7 @@ from parsers.base_parser import BaseParser
 from requests.error_request import ErrorRequest
 from statuses.error_statuses import ErrorStatus
 from network_handlers.base_network_handler import BaseNetworkHandler
-from exceptions import UnexpectedException, ClosedException, OutOfRangeException
+from exceptions import UnexpectedException, ClosedException, OutOfRangeException, Error
 
 
 class AttemptValidator:
@@ -40,6 +40,8 @@ class AttemptValidator:
             return True
         except ClosedException:
             raise
+        except Error:
+            print(f"Error Request:\n{self.request}")
         except UnexpectedException:
             request = ErrorRequest(ErrorStatus.UNEXPECTED)
             data = self.parser.pack(request.to_dict())

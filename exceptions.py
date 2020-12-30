@@ -12,3 +12,7 @@ class ClosedException(Exception):
 
 class UnexpectedException(Exception):
     pass
+
+
+class Error(Exception):
+    pass

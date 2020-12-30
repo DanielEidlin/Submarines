@@ -2,7 +2,7 @@ from parsers.base_parser import BaseParser
 from requests.error_request import ErrorRequest
 from statuses.error_statuses import ErrorStatus
 from statuses.answer_statuses import AnswerStatus
-from exceptions import UnexpectedException, ClosedException
+from exceptions import UnexpectedException, ClosedException, Error
 from network_handlers.base_network_handler import BaseNetworkHandler
 
 
@@ -18,6 +18,8 @@ class AnswerValidator:
             raise UnexpectedException
         if request_type == "ERROR" and self.request.get("STATUS") == "CLOSED":
             raise ClosedException
+        if request_type == "ERROR":
+            raise Error()
         if request_type != "ANSWER":
             raise UnexpectedException
 
@@ -36,6 +38,8 @@ class AnswerValidator:
             return True
         except ClosedException:
             raise
+        except Error:
+            print(f"Error Request:\n{self.request}")
         except UnexpectedException:
             request = ErrorRequest(ErrorStatus.UNEXPECTED)
             data = self.parser.pack(request.to_dict())
