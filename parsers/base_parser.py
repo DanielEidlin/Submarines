@@ -15,10 +15,10 @@ class BaseParser(ABC):
         pass
 
     @abstractmethod
-    def parse(self, request: bytes) -> dict:
+    def parse(self, data: bytes) -> dict:
         """
         Parse request and return it as dictionary.
-        :param request: Request to parse.
+        :param data: Data to parse.
         :return: The parsed request as dictionary.
         """
         pass
