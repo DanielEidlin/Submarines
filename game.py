@@ -239,9 +239,9 @@ class Game:
 
         prompt_defeat()
 
-    def play(self):
+    def run(self):
         """
-        Plays the game.
+        Runs the game.
         """
         try:
             self.initialize_game()
