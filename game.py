@@ -4,6 +4,7 @@ from statuses.answer_statuses import AnswerStatus
 from requests.answer_request import AnswerRequest
 from requests.attempt_request import AttemptRequest
 from validators.ready_validator import ReadyValidator
+from validators.answer_validator import AnswerValidator
 from network_handlers.base_network_handler import BaseNetworkHandler
 
 VERTICAL = "Vertical"
