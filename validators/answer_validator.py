@@ -37,5 +37,6 @@ class AnswerValidator:
         except ClosedException:
             raise
         except UnexpectedException:
-            data = self.parser.pack(ErrorRequest(ErrorStatus.UNEXPECTED).to_dict())
+            request = ErrorRequest(ErrorStatus.UNEXPECTED)
+            data = self.parser.pack(request.to_dict())
             self.network_handler.send(data)
