@@ -1,3 +1,4 @@
+from typing import Optional
 from abc import ABC, abstractmethod
 from consts import DEFAULT_LISTEN_QUEUE, DEFAULT_BUFFER_SIZE
 
@@ -33,10 +34,11 @@ class BaseNetworkHandler(ABC):
         pass
 
     @abstractmethod
-    def receive(self, buffer_size: int = DEFAULT_BUFFER_SIZE) -> bytes:
+    def receive(self, buffer_size: int = DEFAULT_BUFFER_SIZE, timeout: float = None) -> Optional[bytes]:
         """
         Receives data from network.
         :param buffer_size: Size of data to receive.
+        :param timeout: Timeout for receiving.
         :return: Received data.
         """
         pass

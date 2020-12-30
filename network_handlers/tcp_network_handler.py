@@ -1,4 +1,6 @@
+from typing import Optional
 from socket import socket, AF_INET, SOCK_STREAM
+from socket import timeout as timeout_exception
 from base_network_handler import BaseNetworkHandler
 from consts import DEFAULT_LISTEN_QUEUE, PORT, DEFAULT_BUFFER_SIZE
 
@@ -41,12 +43,20 @@ class TCPNetworkHandler(BaseNetworkHandler):
             self.client_socket.send(data)
         self.server_socket.send(data)
 
-    def receive(self, buffer_size: int = DEFAULT_BUFFER_SIZE) -> bytes:
+    def receive(self, buffer_size: int = DEFAULT_BUFFER_SIZE, timeout: float = None) -> Optional[bytes]:
         """
         Receives data from network.
         :param buffer_size: Size of data to receive.
+        :param timeout: Timeout for receiving.
         :return: Received data.
         """
-        if self.client_socket:
-            return self.client_socket.recv(buffer_size)
-        return self.server_socket.recv(buffer_size)
+        self.server_socket.settimeout(None)
+        self.client_socket.settimeout(None)
+        try:
+            if self.client_socket:
+                self.client_socket.settimeout(timeout)
+                return self.client_socket.recv(buffer_size)
+            self.server_socket.settimeout(timeout)
+            return self.server_socket.recv(buffer_size)
+        except timeout_exception:
+            pass
