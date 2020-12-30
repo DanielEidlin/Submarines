@@ -5,6 +5,7 @@ from base_parser import BaseParser
 SEPARATOR = ','
 UNDERSCORE = "_"
 MINUS_SIGN = "-"
+REQUEST_SUFFIX = "\n\n"
 
 
 class JSONParser(BaseParser):
@@ -23,7 +24,7 @@ class JSONParser(BaseParser):
                 request[key] = SEPARATOR.join(value)
             if type(value) == str:
                 request[key] = value.replace(UNDERSCORE, MINUS_SIGN)
-        return json.dumps(request).encode('utf-8')
+        return f"{json.dumps(request)}{REQUEST_SUFFIX}".encode('utf-8')
 
     def parse(self, data: bytes) -> dict:
         """
