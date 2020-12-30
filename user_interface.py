@@ -13,7 +13,7 @@ def prompt_invalid_location():
 
 def prompt_is_host():
     is_host = input("Do you want to be the host y/n: ")
-    while is_host != "y" or is_host != "n":
+    while is_host != "y" and is_host != "n":
         print("Invalid answer. Please try again.")
         is_host = input("Do you want to be the host y/n: ")
     return is_host == "y"
