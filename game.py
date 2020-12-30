@@ -30,7 +30,6 @@ class Game:
         self.parser = parser
         self.board = [[0] * 10] * 10
         self.is_starting = None
-        self.is_finished = False
 
     def set_submarine_horizontally(self, start_column: int, end_column: int, row: int):
         """
@@ -159,7 +158,7 @@ class Game:
         if not self.is_starting:
             self.is_opponent_ready()
 
-    def receive_answer(self):
+    def receive_request(self):
         data = self.network_handler.receive()
         return self.parser.parse(data)
 
@@ -170,19 +169,52 @@ class Game:
 
     def attempt_to_guess(self):
         self.send_guess()
-        request = self.receive_answer()
+        request = self.receive_request()
         is_answer_valid = AnswerValidator(request, self.network_handler, self.parser).is_valid()
 
         while not is_answer_valid:
-            request = self.receive_answer()
+            request = self.receive_request()
             is_answer_valid = AnswerValidator(request, self.network_handler, self.parser).is_valid()
         print_answer(request["STATUS"])
+
+    def is_victory(self) -> bool:
+        return any(SUBMARINE_PART in row for row in self.board)
+
+    def is_full_sub(self, x_coordinate: int, y_coordinate: int) -> bool:
+        for i in range(max(SUBMARINE_LENGTHS) - 1):
+            right_cell = self.board[y_coordinate][x_coordinate + i]
+            left_cell = self.board[y_coordinate][x_coordinate - i]
+            bottom_cell = self.board[y_coordinate + i][x_coordinate]
+            top_cell = self.board[y_coordinate - i][x_coordinate]
+            if SUBMARINE_PART in [right_cell, left_cell, bottom_cell, top_cell]:
+                return False
+        return True
+
+    def handle_guess(self, x_coordinate: int, y_coordinate: int):
+        if self.board[y_coordinate][x_coordinate] == SUBMARINE_PART:
+            self.board[y_coordinate][x_coordinate] = DROWNED_SUBMARINE_PART
+            if self.is_victory():
+                # send victory
+            if self.is_full_sub(x_coordinate, y_coordinate):
+                # send full sub
+            # send correct
+        #send incorrect
+
+
+    def handle_opponent_attempt(self):
+        request = self.receive_request()
+        is_guess_valid = AttemptValidator(request, self.network_handler, self.parser).is_valid()
+
+        while not is_guess_valid:
+            request = self.receive_request()
+            is_guess_valid = AttemptValidator(request, self.network_handler, self.parser).is_valid()
+        handle_guess(request["X-COOR"], request["Y-COOR"])
 
     def start_game_loop(self):
         if self.is_starting:
             self.attempt_to_guess()
 
-        while not self.is_finished:
+        while not self.is_victory():
             self.handle_opponent_attempt()
             self.attempt_to_guess()
 
