@@ -138,8 +138,9 @@ class Game:
         """
         if prompt_is_host():
             self.network_handler.listen()
-        opponent_ip = prompt_opponent_ip()
-        self.network_handler.connect(opponent_ip)
+        else:
+            opponent_ip = prompt_opponent_ip()
+            self.network_handler.connect(opponent_ip)
 
     def is_opponent_ready(self, timeout: float = None) -> bool:
         data = self.network_handler.receive(timeout=timeout)
@@ -161,7 +162,8 @@ class Game:
         self.set_submarines()
         self.send_ready()
         if not self.is_starting:
-            self.is_opponent_ready()
+            while not self.is_opponent_ready():
+                continue
 
     def receive_request(self):
         data = self.network_handler.receive()
@@ -181,7 +183,7 @@ class Game:
         while not is_answer_valid:
             request = self.receive_request()
             is_answer_valid = AnswerValidator(request, self.network_handler, self.parser).is_valid()
-        print_answer(request["STATUS"])
+        print(request["STATUS"])
 
     def is_victory(self) -> bool:
         return any(SUBMARINE_PART in row for row in self.board)
@@ -222,7 +224,7 @@ class Game:
             request = self.receive_request()
             is_guess_valid = AttemptValidator(request, self.network_handler, self.parser, BOARD_SIZE,
                                               MINIMUM_POINT).is_valid()
-        handle_guess(request["X-COOR"], request["Y-COOR"])
+        self.handle_guess(request["X-COOR"], request["Y-COOR"])
 
     def start_game_loop(self):
         if self.is_starting:
