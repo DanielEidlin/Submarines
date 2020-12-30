@@ -21,10 +21,13 @@ class JSONParser(BaseParser):
             request[key] = value.replace(UNDERSCORE, MINUS_SIGN)
         return json.dumps(request).encode('utf-8')
 
-    def parse(self, request: bytes) -> dict:
+    def parse(self, data: bytes) -> dict:
         """
         Parse request and return it as dictionary.
-        :param request: Request to parse.
+        :param data: Data to parse.
         :return: The parsed request as dictionary.
         """
-        pass
+        request = json.loads(data.decode('utf-8'))
+        for key, value in request.items():
+            request[key] = value.replace(MINUS_SIGN, UNDERSCORE)
+        return request
