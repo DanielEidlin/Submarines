@@ -29,6 +29,7 @@ class Game:
         self.parser = parser
         self.board = [[0] * 10] * 10
         self.is_starting = None
+        self.is_finished = False
 
     def set_submarine_horizontally(self, start_column: int, end_column: int, row: int):
         """
@@ -157,10 +158,18 @@ class Game:
         if not self.is_starting:
             self.is_opponent_ready()
 
+    def start_game_loop(self):
+        if self.is_starting:
+            self.send_guess()
+
+        while not self.is_finished:
+            self.receive_guess()
+            self.send_guess()
+
     def play(self):
         """
         Plays the game.
         """
         # TODO: Handle ClosedException.
         self.initialize_game()
-        self.start_gameloop()
+        self.start_game_loop()
