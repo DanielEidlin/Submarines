@@ -1,5 +1,6 @@
 from parsers.base_parser import BaseParser
 from requests.ready_request import ReadyRequest
+from requests.attempt_request import AttemptRequest
 from validators.ready_validator import ReadyValidator
 from network_handlers.base_network_handler import BaseNetworkHandler
 
@@ -158,13 +159,18 @@ class Game:
         if not self.is_starting:
             self.is_opponent_ready()
 
+    def attempt_to_guess(self):
+        x_coordinate, y_coordinate = prompt_guess()
+        data = self.parser.pack(AttemptRequest(x_coordinate, y_coordinate).to_dict())
+        self.network_handler.send(data)
+
     def start_game_loop(self):
         if self.is_starting:
-            self.send_guess()
+            self.attempt_to_guess()
 
         while not self.is_finished:
             self.receive_guess()
-            self.send_guess()
+            self.attempt_to_guess()
 
     def play(self):
         """
