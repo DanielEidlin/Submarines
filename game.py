@@ -1,3 +1,4 @@
+from exceptions import ClosedException
 from parsers.base_parser import BaseParser
 from requests.ready_request import ReadyRequest
 from statuses.answer_statuses import AnswerStatus
@@ -233,6 +234,8 @@ class Game:
         """
         Plays the game.
         """
-        # TODO: Handle ClosedException.
-        self.initialize_game()
-        self.start_game_loop()
+        try:
+            self.initialize_game()
+            self.start_game_loop()
+        except ClosedException:
+            prompt_connection_closed()
