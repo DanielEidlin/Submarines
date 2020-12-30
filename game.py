@@ -1,5 +1,7 @@
 from parsers.base_parser import BaseParser
 from requests.ready_request import ReadyRequest
+from statuses.answer_statuses import AnswerStatus
+from requests.answer_request import AnswerRequest
 from requests.attempt_request import AttemptRequest
 from validators.ready_validator import ReadyValidator
 from network_handlers.base_network_handler import BaseNetworkHandler
@@ -164,7 +166,8 @@ class Game:
 
     def send_guess(self):
         x_coordinate, y_coordinate = prompt_guess()
-        data = self.parser.pack(AttemptRequest(x_coordinate, y_coordinate).to_dict())
+        request = AttemptRequest(x_coordinate, y_coordinate)
+        data = self.parser.pack(request.to_dict())
         self.network_handler.send(data)
 
     def attempt_to_guess(self):
@@ -190,16 +193,22 @@ class Game:
                 return False
         return True
 
+    def send_answer(self, answer_statuses: list[AnswerStatus], x_coordinate: int, y_coordinate: int):
+        request = AnswerRequest(answer_statuses, x_coordinate, y_coordinate)
+        data = self.parser.pack(request.to_dict())
+        self.network_handler.send(data)
+
     def handle_guess(self, x_coordinate: int, y_coordinate: int):
+        answer_statuses = []
         if self.board[y_coordinate][x_coordinate] == SUBMARINE_PART:
             self.board[y_coordinate][x_coordinate] = DROWNED_SUBMARINE_PART
             if self.is_victory():
-                # send victory
+                answer_statuses.append(AnswerStatus.VICTORY)
             if self.is_full_sub(x_coordinate, y_coordinate):
-                # send full sub
-            # send correct
-        #send incorrect
-
+                answer_statuses.append(AnswerStatus.FULL_SUB_CORRECT)
+            answer_statuses.append(AnswerStatus.CORRECT)
+        answer_statuses.append(AnswerStatus.INCORRECT)
+        self.send_answer(answer_statuses, x_coordinate, y_coordinate)
 
     def handle_opponent_attempt(self):
         request = self.receive_request()
