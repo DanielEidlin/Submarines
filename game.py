@@ -215,11 +215,13 @@ class Game:
 
     def handle_opponent_attempt(self):
         request = self.receive_request()
-        is_guess_valid = AttemptValidator(request, self.network_handler, self.parser).is_valid()
+        is_guess_valid = AttemptValidator(request, self.network_handler, self.parser, BOARD_SIZE,
+                                          MINIMUM_POINT).is_valid()
 
         while not is_guess_valid:
             request = self.receive_request()
-            is_guess_valid = AttemptValidator(request, self.network_handler, self.parser).is_valid()
+            is_guess_valid = AttemptValidator(request, self.network_handler, self.parser, BOARD_SIZE,
+                                              MINIMUM_POINT).is_valid()
         handle_guess(request["X-COOR"], request["Y-COOR"])
 
     def start_game_loop(self):
