@@ -1,4 +1,3 @@
-from exceptions import ClosedException
 from parsers.base_parser import BaseParser
 from requests.ready_request import ReadyRequest
 from statuses.answer_statuses import AnswerStatus
@@ -6,10 +5,11 @@ from requests.answer_request import AnswerRequest
 from requests.attempt_request import AttemptRequest
 from validators.ready_validator import ReadyValidator
 from validators.answer_validator import AnswerValidator
+from exceptions import ClosedException, VictoryException
 from validators.attempt_validator import AttemptValidator
 from network_handlers.base_network_handler import BaseNetworkHandler
 from user_interface import prompt_submarine_location, prompt_invalid_location, prompt_is_host, prompt_opponent_ip, \
-    prompt_guess, prompt_connection_closed, prompt_defeat
+    prompt_guess, prompt_connection_closed, prompt_defeat, prompt_victory
 
 VERTICAL = "Vertical"
 HORIZONTAL = "Horizontal"
@@ -248,3 +248,5 @@ class Game:
             self.start_game_loop()
         except ClosedException:
             prompt_connection_closed()
+        except VictoryException:
+            prompt_victory()

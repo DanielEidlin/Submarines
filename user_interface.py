@@ -35,4 +35,8 @@ def prompt_connection_closed():
 
 
 def prompt_defeat():
-    print("You lost :(")
+    print("You Lose! :(")
+
+
+def prompt_victory():
+    print("You Win! :)")

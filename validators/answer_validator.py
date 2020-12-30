@@ -2,8 +2,8 @@ from parsers.base_parser import BaseParser
 from requests.error_request import ErrorRequest
 from statuses.error_statuses import ErrorStatus
 from statuses.answer_statuses import AnswerStatus
-from exceptions import UnexpectedException, ClosedException, Error
 from network_handlers.base_network_handler import BaseNetworkHandler
+from exceptions import UnexpectedException, ClosedException, Error, VictoryException
 
 
 class AnswerValidator:
@@ -30,6 +30,8 @@ class AnswerValidator:
             raise UnexpectedException
         if not all(status in available_statuses for status in answer_statuses):
             raise UnexpectedException
+        if AnswerStatus.VICTORY.name in answer_statuses:
+            raise VictoryException
 
     def is_valid(self) -> bool:
         try:

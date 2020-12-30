@@ -2,7 +2,7 @@ class OutOfRangeException(Exception):
     pass
 
 
-class AttemptNotInTurnException(Exception):
+class VictoryException(Exception):
     pass
 
 
