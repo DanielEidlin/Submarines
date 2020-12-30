@@ -22,7 +22,7 @@ class AnswerValidator:
             raise UnexpectedException
 
     def validate_request_fields(self):
-        answer_statuses = self.request.get("STATUS")
+        answer_statuses = self.request.get("STATUS", None)
         available_statuses = [status_name for status_name, _ in AnswerStatus.__members__.items()]
         if not answer_statuses:
             raise UnexpectedException
