@@ -159,17 +159,31 @@ class Game:
         if not self.is_starting:
             self.is_opponent_ready()
 
-    def attempt_to_guess(self):
+    def receive_answer(self):
+        data = self.network_handler.receive()
+        return self.parser.parse(data)
+
+    def send_guess(self):
         x_coordinate, y_coordinate = prompt_guess()
         data = self.parser.pack(AttemptRequest(x_coordinate, y_coordinate).to_dict())
         self.network_handler.send(data)
+
+    def attempt_to_guess(self):
+        self.send_guess()
+        request = self.receive_answer()
+        is_answer_valid = AnswerValidator(request, self.network_handler, self.parser).is_valid()
+
+        while not is_answer_valid:
+            request = self.receive_answer()
+            is_answer_valid = AnswerValidator(request, self.network_handler, self.parser).is_valid()
+        print_answer(request["STATUS"])
 
     def start_game_loop(self):
         if self.is_starting:
             self.attempt_to_guess()
 
         while not self.is_finished:
-            self.receive_guess()
+            self.handle_opponent_attempt()
             self.attempt_to_guess()
 
     def play(self):
