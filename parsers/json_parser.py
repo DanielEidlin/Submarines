@@ -1,6 +1,6 @@
 import json
 
-from base_parser import BaseParser
+from .base_parser import BaseParser
 
 SEPARATOR = ','
 UNDERSCORE = "_"

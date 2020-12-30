@@ -1,5 +1,5 @@
-from consts import REQUIRED_FIELDS
-from base_request import BaseRequest
+from .consts import REQUIRED_FIELDS
+from .base_request import BaseRequest
 
 
 class AttemptRequest(BaseRequest):

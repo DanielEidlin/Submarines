@@ -1,8 +1,8 @@
 from typing import Optional
 from socket import socket, AF_INET, SOCK_STREAM
 from socket import timeout as timeout_exception
-from base_network_handler import BaseNetworkHandler
-from consts import DEFAULT_LISTEN_QUEUE, PORT, DEFAULT_BUFFER_SIZE
+from .base_network_handler import BaseNetworkHandler
+from .consts import DEFAULT_LISTEN_QUEUE, PORT, DEFAULT_BUFFER_SIZE
 
 
 class TCPNetworkHandler(BaseNetworkHandler):

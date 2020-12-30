@@ -1,6 +1,6 @@
 from typing import Optional
 from abc import ABC, abstractmethod
-from consts import DEFAULT_LISTEN_QUEUE, DEFAULT_BUFFER_SIZE
+from .consts import DEFAULT_LISTEN_QUEUE, DEFAULT_BUFFER_SIZE
 
 
 class BaseNetworkHandler(ABC):
