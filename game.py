@@ -28,6 +28,7 @@ class Game:
         self.network_handler = network_handler
         self.parser = parser
         self.board = [[0] * 10] * 10
+        self.is_starting = None
 
     def set_submarine_horizontally(self, start_column: int, end_column: int, row: int):
         """
@@ -136,20 +137,30 @@ class Game:
 
     def is_opponent_ready(self, timeout: float = None) -> bool:
         data = self.network_handler.receive(timeout=timeout)
-        return data and ReadyValidator(self.parser.parse(data)).is_valid()
+        if not data:
+            return False
+        request = self.parser.parse(data)
+        return ReadyValidator(request, self.network_handler, self.parser).is_valid()
 
     def send_ready(self):
         """
         Send READY request to opponent.
         """
+        self.is_starting = not self.is_opponent_ready(timeout=READY_TIMEOUT)
         data = self.parser.pack(ReadyRequest().to_dict())
         self.network_handler.send(data)
+
+    def initialize_game(self):
+        self.initialize_connection()
+        self.set_submarines()
+        self.send_ready()
+        if not self.is_starting:
+            self.is_opponent_ready()
 
     def play(self):
         """
         Plays the game.
         """
         # TODO: Handle ClosedException.
-        self.initialize_connection()
-        self.set_submarines()
-        self.send_ready()
+        self.initialize_game()
+        self.start_gameloop()
