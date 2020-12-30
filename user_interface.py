@@ -4,7 +4,7 @@ def prompt_submarine_location(submarine_length: int):
     axis_value = input("Choose axis value (if you chose vertical alignment this represents the column.): ")
     start_point = input("Choose start point: ")
     end_point = input("Choose end point: ")
-    return alignment, axis_value, start_point, end_point
+    return alignment, int(axis_value), int(start_point), int(end_point)
 
 
 def prompt_invalid_location():
@@ -27,7 +27,7 @@ def prompt_opponent_ip():
 def prompt_guess():
     x_coordinate = input("Enter X coordinate for guess: ")
     y_coordinate = input("Enter Y coordinate for guess: ")
-    return x_coordinate, y_coordinate
+    return int(x_coordinate), int(y_coordinate)
 
 
 def prompt_connection_closed():
