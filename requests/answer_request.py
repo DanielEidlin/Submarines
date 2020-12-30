@@ -8,14 +8,14 @@ class AnswerRequest(BaseRequest):
     Class representing an ANSWER request.
     """
 
-    def __init__(self, status: AnswerStatus, x_coordinate: int = None, y_coordinate: int = None):
+    def __init__(self, statuses: list[AnswerStatus], x_coordinate: int = None, y_coordinate: int = None):
         """
         Default constructor.
-        :param status: Answer request status.
+        :param statuses: Answer request statuses.
         :param x_coordinate: X coordinate of the attempt.
         :param y_coordinate: Y coordinate of the attempt.
         """
-        self.status = status
+        self.statuses = [status.name for status in statuses]
         self.x_coordinate = x_coordinate
         self.y_coordinate = y_coordinate
 
@@ -26,5 +26,5 @@ class AnswerRequest(BaseRequest):
         """
         if self.x_coordinate and self.y_coordinate:
             return dict(REQUIRED_FIELDS, **{"TYPE": "ANSWER"},
-                        **{"X-COOR": self.x_coordinate, "Y-COOR": self.y_coordinate}, **{"STATUS": self.status.name})
-        return dict(REQUIRED_FIELDS, **{"TYPE": "ANSWER"}, **{"STATUS": self.status.name})
+                        **{"X-COOR": self.x_coordinate, "Y-COOR": self.y_coordinate}, **{"STATUS": self.statuses})
+        return dict(REQUIRED_FIELDS, **{"TYPE": "ANSWER"}, **{"STATUS": self.statuses})

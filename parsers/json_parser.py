@@ -2,6 +2,7 @@ import json
 
 from base_parser import BaseParser
 
+SEPARATOR = ','
 UNDERSCORE = "_"
 MINUS_SIGN = "-"
 
@@ -18,7 +19,10 @@ class JSONParser(BaseParser):
         :return: The packed request as bytes.
         """
         for key, value in request.items():
-            request[key] = value.replace(UNDERSCORE, MINUS_SIGN)
+            if type(value) == list:
+                request[key] = SEPARATOR.join(value)
+            if type(value) == str:
+                request[key] = value.replace(UNDERSCORE, MINUS_SIGN)
         return json.dumps(request).encode('utf-8')
 
     def parse(self, data: bytes) -> dict:
@@ -29,5 +33,8 @@ class JSONParser(BaseParser):
         """
         request = json.loads(data.decode('utf-8'))
         for key, value in request.items():
-            request[key] = value.replace(MINUS_SIGN, UNDERSCORE)
+            if type(value) == str:
+                request[key] = value.replace(MINUS_SIGN, UNDERSCORE)
+                if SEPARATOR in value:
+                    request[key] = value.split(SEPARATOR)
         return request
