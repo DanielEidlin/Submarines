@@ -20,9 +20,10 @@ class ReadyValidator:
         if request_type != "READY":
             raise UnexpectedException
 
-    def validate(self):
+    def is_valid(self) -> bool:
         try:
             self.validate_request_type()
+            return True
         except ClosedException:
             raise
         except UnexpectedException:
