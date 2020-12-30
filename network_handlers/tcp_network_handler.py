@@ -50,8 +50,6 @@ class TCPNetworkHandler(BaseNetworkHandler):
         :param timeout: Timeout for receiving.
         :return: Received data.
         """
-        self.server_socket.settimeout(None)
-        self.client_socket.settimeout(None)
         try:
             if self.client_socket:
                 self.client_socket.settimeout(timeout)
