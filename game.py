@@ -11,6 +11,7 @@ WATER = 0
 SUBMARINE_PART = 1
 DROWNED_SUBMARINE_PART = 2
 SUBMARINE_LENGTHS = [5, 4, 3, 3, 2]
+READY_TIMEOUT = 0.1
 
 
 class Game:
@@ -132,6 +133,10 @@ class Game:
             self.network_handler.listen()
         opponent_ip = prompt_opponent_ip()
         self.network_handler.connect(opponent_ip)
+
+    def is_opponent_ready(self, timeout: float = None) -> bool:
+        data = self.network_handler.receive(timeout=timeout)
+        return data and ReadyValidator(self.parser.parse(data)).is_valid()
 
     def send_ready(self):
         """
