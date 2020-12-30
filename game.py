@@ -116,7 +116,7 @@ class Game:
             return False
         if axis_value >= BOARD_SIZE or axis_value < MINIMUM_POINT:
             return False
-        if abs(end_point - start_point) != submarine_length:
+        if abs(end_point - start_point) != submarine_length - 1:
             return False
         if alignment == HORIZONTAL:
             return self.validate_horizontal_location(axis_value, start_point, end_point)
