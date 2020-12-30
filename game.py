@@ -8,6 +8,8 @@ from validators.ready_validator import ReadyValidator
 from validators.answer_validator import AnswerValidator
 from validators.attempt_validator import AttemptValidator
 from network_handlers.base_network_handler import BaseNetworkHandler
+from user_interface import prompt_submarine_location, prompt_invalid_location, prompt_is_host, prompt_opponent_ip, \
+    prompt_guess, prompt_connection_closed, prompt_defeat
 
 VERTICAL = "Vertical"
 HORIZONTAL = "Horizontal"
@@ -127,9 +129,10 @@ class Game:
         Set submarines' locations.
         """
         for submarine_length in SUBMARINE_LENGTHS:
-            alignment, axis_value, start_point, end_point = prompt_submarine_location()
+            alignment, axis_value, start_point, end_point = prompt_submarine_location(submarine_length)
             while not self.is_location_valid(submarine_length, axis_value, alignment, start_point, end_point):
-                alignment, axis_value, start_point, end_point = prompt_submarine_location()
+                prompt_invalid_location()
+                alignment, axis_value, start_point, end_point = prompt_submarine_location(submarine_length)
             self.set_submarine(alignment, axis_value, start_point, end_point)
 
     def initialize_connection(self):
@@ -185,7 +188,7 @@ class Game:
             is_answer_valid = AnswerValidator(request, self.network_handler, self.parser).is_valid()
         print(request["STATUS"])
 
-    def is_victory(self) -> bool:
+    def is_all_ships_drowned(self) -> bool:
         return any(SUBMARINE_PART in row for row in self.board)
 
     def is_full_sub(self, x_coordinate: int, y_coordinate: int) -> bool:
@@ -207,7 +210,7 @@ class Game:
         answer_statuses = []
         if self.board[y_coordinate][x_coordinate] == SUBMARINE_PART:
             self.board[y_coordinate][x_coordinate] = DROWNED_SUBMARINE_PART
-            if self.is_victory():
+            if self.is_all_ships_drowned():
                 answer_statuses.append(AnswerStatus.VICTORY)
             if self.is_full_sub(x_coordinate, y_coordinate):
                 answer_statuses.append(AnswerStatus.FULL_SUB_CORRECT)
@@ -230,9 +233,11 @@ class Game:
         if self.is_starting:
             self.attempt_to_guess()
 
-        while not self.is_victory():
+        while not self.is_all_ships_drowned():
             self.handle_opponent_attempt()
             self.attempt_to_guess()
+
+        prompt_defeat()
 
     def play(self):
         """
